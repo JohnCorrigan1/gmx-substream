@@ -1,0 +1,28 @@
+syntax = "proto3";
+
+package gmx;
+
+message Things {
+    repeated Thing things = 1;
+}
+
+message Thing {
+    string thing1 = 1;
+    string thing2 = 2;
+    string thing3 = 3;
+}
+
+message PositionIncreases {
+    repeated PositionIncrease positionIncreases = 1;
+}
+
+message PositionIncrease {
+    string trx = 1;
+    string market = 2;
+    string sizeUsd = 3;
+    string sizeTokens = 4;
+    string collateralAmount = 5;
+    string collateralUsd = 6;
+    bool isLong = 7;
+    string leverage = 8;
+}

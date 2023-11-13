@@ -1,96 +1,85 @@
 mod abi;
 mod pb;
+use ethereum_types::{H160, H256};
 use hex_literal::hex;
-use pb::eth::erc721::v1 as erc721;
-use substreams::{key, prelude::*};
-use substreams::{log, store::StoreAddInt64, Hex};
-use substreams_database_change::pb::database::DatabaseChanges;
-use substreams_database_change::tables::Tables;
+use pb::gmx::{PositionIncrease, PositionIncreases, Thing, Things};
+use substreams::Hex;
 use substreams_ethereum::pb::sf::ethereum::r#type::v2 as eth;
+//use substreams_ethereum::Event;
 
 // Bored Ape Club Contract
-const TRACKED_CONTRACT: [u8; 20] = hex!("bc4ca0eda7647a8ab7c2061c2e118a18a936f13d");
-
+//const TRACKED_CONTRACT: [u8; 20] = hex!("C8ee91A54287DB53897056e12D9819156D3822Fb");
+//const WBTC_MARKET: &str = "0x47c031236e19d024b42f8ae6780e44a573170703"; 00000000000000000000000047c031236e19d024b42f8ae6780e44a573170703
 substreams_ethereum::init!();
 
 /// Extracts transfers events from the contract
 #[substreams::handlers::map]
-fn map_transfers(blk: eth::Block) -> Result<Option<erc721::Transfers>, substreams::errors::Error> {
-    let transfers: Vec<_> = blk
-        .events::<abi::erc721::events::Transfer>(&[&TRACKED_CONTRACT])
-        .map(|(transfer, log)| {
-            substreams::log::info!("NFT Transfer seen");
+fn map_transfers(blk: eth::Block) -> Result<Option<Things>, substreams::errors::Error> {
+    /*
+        let things: Vec<_> = blk
+            .events::<abi::gmx::events::EventLog>(&[&TRACKED_CONTRACT])
+            .collect();
+    */
 
-            erc721::Transfer {
-                trx_hash: Hex::encode(&log.receipt.transaction.hash),
-                from: Hex::encode(&transfer.from),
-                to: Hex::encode(&transfer.to),
-                token_id: transfer.token_id.to_u64(),
-                ordinal: log.block_index() as u64,
+    for trx in &blk.transaction_traces {
+        for e in &trx.calls {
+            for g in &e.logs {
+                for d in &g.topics {
+                    if d.clone()
+                        == hex!("137a44067c8961cd7e1d876f4754a5a3a75989b4552f1843fc69c3b372def160")
+                    {
+                        let mut chunks: Vec<String> = Vec::new();
+
+                        for i in (0..Hex::encode(&g.data).len()).step_by(64) {
+                            chunks.push(Hex::encode(&g.data).chars().skip(i).take(64).collect());
+                        }
+
+                        if chunks[4]
+                            == "506f736974696f6e496e63726561736500000000000000000000000000000000"
+                                .to_string()
+                        {
+                            let event_name = Hex::decode(&chunks[4]).unwrap();
+                            let event_name = String::from_utf8(event_name).unwrap();
+                            substreams::log::info!("eventName: {}", event_name);
+
+                            let usd = chunks[50].clone();
+                            let usd = Hex::decode(&usd).unwrap();
+                            let usd: substreams::scalar::BigDecimal =
+                                substreams::scalar::BigInt::from_unsigned_bytes_be(&usd) / 1e30;
+                            let usd = usd.to_string().parse::<f64>().unwrap();
+                            substreams::log::info!("usd: {}", usd);
+
+                            let collat = chunks[58].clone();
+                            let collat = Hex::decode(&collat).unwrap();
+                            let collat: substreams::scalar::BigDecimal =
+                                substreams::scalar::BigInt::from_unsigned_bytes_be(&collat) / 1e6;
+                            let collat = collat.to_string().parse::<f64>().unwrap();
+
+                            substreams::log::info!("collat: {}", collat);
+
+                            substreams::log::info!("leverage: {}", usd / collat);
+
+                            let increase = PositionIncrease {
+                                trx: Hex::encode(&trx.hash),
+                                market: Hex::encode(
+                                    &Hex::decode(&chunks[23]).unwrap()[12..].to_vec(),
+                                ),
+                                size_usd: usd.to_string(),
+                                size_tokens: chunks[54].clone(),
+                                collateral_amount: chunks[58].clone(),
+                                collateral_usd: collat.to_string(),
+                                is_long: true,
+                                leverage: (usd / collat).to_string(),
+                            };
+                            substreams::log::info!("increase: {:?}", increase);
+                        }
+                    }
+                }
             }
-        })
-        .collect();
-    if transfers.len() == 0 {
-        return Ok(None);
-    }
-
-    Ok(Some(erc721::Transfers { transfers }))
-}
-
-const NULL_ADDRESS: &str = "0000000000000000000000000000000000000000";
-
-/// Store the total balance of NFT tokens for the specific TRACKED_CONTRACT by holder
-#[substreams::handlers::store]
-fn store_transfers(transfers: erc721::Transfers, s: StoreAddInt64) {
-    log::info!("NFT holders state builder");
-    for transfer in transfers.transfers {
-        if transfer.from != NULL_ADDRESS {
-            log::info!("Found a transfer out {}", Hex(&transfer.trx_hash));
-            s.add(transfer.ordinal, generate_key(&transfer.from), -1);
-        }
-
-        if transfer.to != NULL_ADDRESS {
-            log::info!("Found a transfer in {}", Hex(&transfer.trx_hash));
-            s.add(transfer.ordinal, generate_key(&transfer.to), 1);
         }
     }
-}
 
-#[substreams::handlers::map]
-fn db_out(
-    clock: substreams::pb::substreams::Clock,
-    transfers: erc721::Transfers,
-    owner_deltas: Deltas<DeltaInt64>,
-) -> Result<DatabaseChanges, substreams::errors::Error> {
-    let mut tables = Tables::new();
-    for transfer in transfers.transfers {
-        tables
-            .create_row(
-                "transfer",
-                format!("{}-{}", &transfer.trx_hash, transfer.ordinal),
-            )
-            .set("trx_hash", transfer.trx_hash)
-            .set("from", transfer.from)
-            .set("to", transfer.to)
-            .set("token_id", transfer.token_id)
-            .set("ordinal", transfer.ordinal);
-    }
+    let things: Vec<Thing> = vec![];
 
-    for delta in owner_deltas.into_iter() {
-        let holder = key::segment_at(&delta.key, 1);
-        let contract = key::segment_at(&delta.key, 2);
-
-        tables
-            .create_row("owner_count", format!("{}-{}", contract, holder))
-            .set("contract", contract)
-            .set("holder", holder)
-            .set("balance", delta.new_value)
-            .set("block_number", clock.number);
-    }
-
-    Ok(tables.to_database_changes())
-}
-
-fn generate_key(holder: &String) -> String {
-    return format!("total:{}:{}", holder, Hex(TRACKED_CONTRACT));
+    Ok(Some(Things { things }))
 }
