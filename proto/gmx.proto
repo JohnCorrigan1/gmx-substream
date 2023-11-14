@@ -2,27 +2,24 @@ syntax = "proto3";
 
 package gmx;
 
-message Things {
-    repeated Thing things = 1;
-}
-
-message Thing {
-    string thing1 = 1;
-    string thing2 = 2;
-    string thing3 = 3;
-}
-
 message PositionIncreases {
     repeated PositionIncrease positionIncreases = 1;
 }
 
 message PositionIncrease {
-    string trx = 1;
-    string market = 2;
-    string sizeUsd = 3;
-    string sizeTokens = 4;
-    string collateralAmount = 5;
-    string collateralUsd = 6;
-    bool isLong = 7;
-    string leverage = 8;
+    string eventName = 1;
+    string trx = 2;
+    string account = 3;
+    string market = 4;
+    double executionPrice = 5;
+    double sizeUsd = 6;
+    double sizeTokens = 7;
+    double collateralAmount = 8;
+    bool isLong = 9;
+    double leverage = 10;
+    int32 orderType = 11;
+    string orderKey = 12;
+    string positionKey = 13;
+    string timestamp = 14;
+    uint64 blockNumber = 15;
 }

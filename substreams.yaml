@@ -15,12 +15,12 @@ binaries:
     file: ./target/wasm32-unknown-unknown/release/substreams.wasm
 
 modules:
-  - name: map_transfers
+  - name: map_increases
     kind: map
     initialBlock: 12287507
     inputs:
       - source: sf.ethereum.type.v2.Block
     output:
-      type: proto:gmx.Things
+      type: proto:gmx.PositionIncreases
 
 network: arbitrum-one 
