@@ -21,7 +21,7 @@ pub mod helpers {
     pub fn get_size_usd(chunk: &str) -> f64 {
         let usd = Hex::decode(chunk).unwrap();
         let usd: substreams::scalar::BigDecimal =
-            substreams::scalar::BigInt::from_unsigned_bytes_be(&usd) / 1e30;
+            substreams::scalar::BigInt::from_signed_bytes_be(&usd) / 1e30;
         let usd = usd.to_string().parse::<f64>().unwrap();
         (usd * 100.0).round() / 100.0
     }
