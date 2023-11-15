@@ -3,6 +3,7 @@ pub mod decrease_maps {
     use crate::pb;
     use helpers::helpers::{get_chunks, get_event_name};
     use hex_literal::hex;
+    use num_bigint::BigInt;
     use pb::gmx::PositionIncreases;
     use substreams::Hex;
     use substreams_ethereum::pb::sf::ethereum::r#type::v2 as eth;
@@ -47,8 +48,26 @@ pub mod decrease_maps {
                                     );
 
                                 let order_type = helpers::helpers::get_order_type(&chunks[118]);
-                                let base_pnl = helpers::helpers::get_size_usd(&chunks[133]);
+                                let base_pnl = &chunks[133].clone();
+                                substreams::log::info!("len: {}", base_pnl.len());
+                                //convert fffffffffffffffffffffffffffffffffffffdd89b52826ddbf55d788c4d6100
+                                //to f64
+
+                                let base_pnl = Hex::decode(&base_pnl).unwrap();
+                                let base_pnl =
+                                    substreams::scalar::BigInt::from_signed_bytes_be(&base_pnl);
+                                let base_pnl: substreams::scalar::BigDecimal = base_pnl / 1e30;
+                                let base_pnl: f64 = base_pnl.to_string().parse::<f64>().unwrap();
+                                let base_pnl = (base_pnl * 100.0).round() / 100.0;
+                                substreams::log::info!("base_pnl: {}", base_pnl);
+
+                                //let base_pnl =
+                                //   substreams::scalar::BigDecimal::from_str_radix(&base_pnl, 32);
+                                //substreams::log::info!("real: {:?}", base_pnl);
+                                //let base_pnl = base_pnl.trim_matches(|c| c == 'f').to_string();
+                                //let base_pnl = helpers::helpers::get_size_usd(&chunks[133]);
                                 let is_long = helpers::helpers::is_long(&chunks[146]);
+
                                 //helpers::helpers::get_execution_price(&chunks[82]);
                                 let position_key = Hex::decode(&chunks[160].clone());
                                 substreams::log::info!("size_usd: {}", size_usd);
