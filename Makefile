@@ -3,7 +3,7 @@ ENDPOINT ?= arb-one.streamingfast.io:443
 #142,415,715
 #149808983 
 START_BLOCK ?= 149808982 
-STOP_BLOCK ?= +10
+STOP_BLOCK ?= +20
 
 .PHONY: build
 build:
@@ -11,11 +11,11 @@ build:
 
 .PHONY: run
 run: build
-	substreams run -e $(ENDPOINT) substreams.yaml map_increases -s $(START_BLOCK) -t $(STOP_BLOCK)
+	substreams run -e $(ENDPOINT) substreams.yaml map_decreases -s $(START_BLOCK) -t $(STOP_BLOCK)
 
 .PHONY: gui
 gui: build
-	substreams gui -e $(ENDPOINT) substreams.yaml db_out -s $(START_BLOCK) -t $(STOP_BLOCK)
+	substreams gui -e $(ENDPOINT) substreams.yaml map_increases -s $(START_BLOCK) -t $(STOP_BLOCK)
 
 .PHONY: protogen
 protogen:
