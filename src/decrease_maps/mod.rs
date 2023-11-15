@@ -3,8 +3,7 @@ pub mod decrease_maps {
     use crate::pb;
     use helpers::helpers::{get_chunks, get_event_name};
     use hex_literal::hex;
-    use num_bigint::BigInt;
-    use pb::gmx::PositionIncreases;
+    use pb::gmx::{PositionDecrease, PositionDecreases};
     use substreams::Hex;
     use substreams_ethereum::pb::sf::ethereum::r#type::v2 as eth;
 
@@ -19,8 +18,8 @@ pub mod decrease_maps {
     #[substreams::handlers::map]
     fn map_decreases(
         blk: eth::Block,
-    ) -> Result<Option<PositionIncreases>, substreams::errors::Error> {
-        //let mut position_decreases: Vec<PositionIncrease> = vec![];
+    ) -> Result<Option<PositionDecreases>, substreams::errors::Error> {
+        let mut position_decreases: Vec<PositionDecrease> = vec![];
         for trx in &blk.transaction_traces {
             for e in &trx.calls {
                 for g in &e.logs {
@@ -46,6 +45,12 @@ pub mod decrease_maps {
                                     substreams::scalar::BigInt::from_unsigned_bytes_be(
                                         &execution_price,
                                     );
+                                let execution_price =
+                                    execution_price.to_string().parse::<f64>().unwrap();
+                                //substreams::log::info!("execution_price: {:?}", execution_price);
+                                //let execution_price =
+                                //   helpers::helpers::get_execution_price(&chunks[82]);
+                                substreams::log::info!("execution_price: {}", execution_price);
 
                                 let order_type = helpers::helpers::get_order_type(&chunks[118]);
                                 let base_pnl = helpers::helpers::get_size_usd(&chunks[133]);
@@ -79,13 +84,34 @@ pub mod decrease_maps {
                                 substreams::log::info!("base_pnl: {}", base_pnl);
                                 substreams::log::info!("is_long: {}", is_long);
                                 substreams::log::info!("position_key: {:?}", position_key);
+                                position_decreases.push(PositionDecrease {
+                                    event_name: get_event_name(&chunks[4]),
+                                    trx: Hex::encode(&trx.hash),
+                                    account: helpers::helpers::get_address(&chunks[19]),
+                                    market: helpers::helpers::get_address(&chunks[23]),
+                                    execution_price,
+                                    size_usd: 0.01,
+                                    size_tokens: helpers::helpers::get_size_in_tokens(&chunks[54]),
+                                    collateral_amount: 0.01,
+                                    is_long: helpers::helpers::is_long(&chunks[146]),
+                                    base_pnl,
+                                    leverage: 10.0,
+                                    order_type: helpers::helpers::get_order_type(&chunks[118]),
+                                    order_key: chunks[156].clone(),
+                                    position_key: chunks[160].clone(),
+                                    timestamp: blk.timestamp().to_string(),
+                                    block_number: blk.number,
+                                });
+                                substreams::log::info!(
+                                    "position_decreases: {:?}",
+                                    position_decreases
+                                );
                             }
                         }
                     }
                 }
             }
         }
-
-        Ok(None)
+        Ok(Some(PositionDecreases { position_decreases }))
     }
 }

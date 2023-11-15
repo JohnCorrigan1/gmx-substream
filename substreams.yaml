@@ -29,7 +29,7 @@ modules:
     inputs:
       - source: sf.ethereum.type.v2.Block
     output:
-      type: proto:gmx.PositionIncreases
+      type: proto:gmx.PositionDecreases
 
   - name: map_liquidations
     kind: map
