@@ -47,9 +47,10 @@ pub mod decrease_maps {
                                     );
 
                                 let order_type = helpers::helpers::get_order_type(&chunks[118]);
-
+                                let base_pnl = helpers::helpers::get_size_usd(&chunks[133]);
+                                let is_long = helpers::helpers::is_long(&chunks[146]);
                                 //helpers::helpers::get_execution_price(&chunks[82]);
-
+                                let position_key = Hex::decode(&chunks[160].clone());
                                 substreams::log::info!("size_usd: {}", size_usd);
                                 substreams::log::info!("collat: {}", collateral_amount);
                                 substreams::log::info!("account: {}", account);
@@ -57,6 +58,9 @@ pub mod decrease_maps {
                                 substreams::log::info!("market: {}", market);
                                 substreams::log::info!("execution_price: {}", execution_price);
                                 substreams::log::info!("order_type: {}", order_type);
+                                substreams::log::info!("base_pnl: {}", base_pnl);
+                                substreams::log::info!("is_long: {}", is_long);
+                                substreams::log::info!("position_key: {:?}", position_key);
                             }
                         }
                     }

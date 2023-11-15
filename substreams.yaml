@@ -31,6 +31,15 @@ modules:
     output:
       type: proto:gmx.PositionIncreases
 
+  - name: map_liquidations
+    kind: map
+    initialBlock: 12287507
+    inputs:
+      - source: sf.ethereum.type.v2.Block
+    output:
+      type: proto:gmx.PositionIncreases
+
+
   - name: map_wbtc_increases
     kind: map
     initialBlock: 12287507
