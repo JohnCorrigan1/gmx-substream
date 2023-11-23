@@ -31,13 +31,21 @@ modules:
     output:
       type: proto:gmx.PositionDecreases
 
-  - name: map_liquidations
+  - name: map_decrease_events
     kind: map
     initialBlock: 12287507
     inputs:
       - source: sf.ethereum.type.v2.Block
     output:
-      type: proto:gmx.PositionIncreases
+      type: proto:gmx.PositionDecreases
+
+  - name: map_liquidations
+    kind: map
+    initialBlock: 12287507
+    inputs:
+      - map: map_decreases 
+    output:
+      type: proto:gmx.PositionDecreases
 
 
   - name: map_wbtc_increases
@@ -48,6 +56,14 @@ modules:
     output:
       type: proto:gmx.PositionIncreases
 
+  - name: map_wbtc_decreases
+    kind: map
+    initialBlock: 12287507
+    inputs:
+      - map: map_decreases
+    output:
+      type: proto:gmx.PositionDecreases
+
   - name: map_weth_increases
     kind: map
     initialBlock: 12287507
@@ -55,6 +71,14 @@ modules:
       - map: map_increases
     output:
       type: proto:gmx.PositionIncreases
+
+  - name: map_weth_decreases
+    kind: map
+    initialBlock: 12287507
+    inputs:
+      - map: map_decreases
+    output:
+      type: proto:gmx.PositionDecreases
 
   - name: map_arb_increases
     kind: map
@@ -64,6 +88,14 @@ modules:
     output:
       type: proto:gmx.PositionIncreases
 
+  - name: map_arb_decreases
+    kind: map
+    initialBlock: 12287507
+    inputs:
+      - map: map_decreases
+    output:
+      type: proto:gmx.PositionDecreases
+
   - name: map_link_increases
     kind: map
     initialBlock: 12287507
@@ -71,6 +103,14 @@ modules:
       - map: map_increases
     output:
       type: proto:gmx.PositionIncreases
+
+  - name: map_link_decreases
+    kind: map
+    initialBlock: 12287507
+    inputs:
+      - map: map_decreases
+    output:
+      type: proto:gmx.PositionDecreases
 
   - name: map_wsol_increases
     kind: map
@@ -80,5 +120,12 @@ modules:
     output:
       type: proto:gmx.PositionIncreases
 
+  - name: map_wsol_decreases
+    kind: map
+    initialBlock: 12287507
+    inputs:
+      - map: map_decreases
+    output:
+      type: proto:gmx.PositionDecreases
 
 network: arbitrum-one 

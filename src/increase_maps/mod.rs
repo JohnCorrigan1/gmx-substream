@@ -1,13 +1,12 @@
 pub mod increase_maps {
-    use crate::helpers;
+    use crate::helpers::helpers;
     use crate::pb;
-    use helpers::helpers::{get_chunks, get_event_name};
+    use helpers::Market;
     use hex_literal::hex;
     use pb::gmx::{PositionIncrease, PositionIncreases};
     use substreams::Hex;
     use substreams_ethereum::pb::sf::ethereum::r#type::v2 as eth;
 
-    //const WBTC_MARKET: &str = "0x47c031236e19d024b42f8ae6780e44a573170703"; 00000000000000000000000047c031236e19d024b42f8ae6780e44a573170703
     const WBTC_MARKET: &str = "47c031236e19d024b42f8ae6780e44a573170703";
     const ARB_MARKET: &str = "c25cef6061cf5de5eb761b50e4743c1f5d7e5407";
     const WETH_MARKET: &str = "70d95587d40a2caf56bd97485ab3eec10bee6336";
@@ -20,48 +19,62 @@ pub mod increase_maps {
     fn map_increases(
         blk: eth::Block,
     ) -> Result<Option<PositionIncreases>, substreams::errors::Error> {
-        let mut position_increases: Vec<PositionIncrease> = vec![];
-        for trx in &blk.transaction_traces {
-            for e in &trx.calls {
-                for g in &e.logs {
-                    for d in &g.topics {
-                        if d.clone()
-                            == hex!(
+        let position_increases: Vec<_> = blk
+            .transaction_traces
+            .iter()
+            .map(|trx| {
+                trx.calls.iter().map(|e| {
+                    e.logs.iter().map(|g| {
+                        g.topics.iter().filter_map(|d| {
+                            if d.clone()
+                                == hex!(
                                 "137a44067c8961cd7e1d876f4754a5a3a75989b4552f1843fc69c3b372def160"
-                            )
-                        {
-                            let chunks: Vec<String> = get_chunks(g.data.clone());
+                            ) {
+                                let chunks: Vec<String> = helpers::get_chunks(g.data.clone());
 
-                            if get_event_name(&chunks[4]) == "PositionIncrease".to_string() {
-                                let size_usd = helpers::helpers::get_size_usd(&chunks[50]);
-                                let collateral_amount = helpers::helpers::get_collat(&chunks[58]);
+                                if helpers::get_event_name(&chunks[4])
+                                    == "PositionIncrease".to_string()
+                                {
+                                    substreams::log::info!(
+                                        "market: {}",
+                                        helpers::get_address(&chunks[23])
+                                    );
+                                    let market: Market = helpers::get_market(&chunks[23]);
+                                    let size_usd = helpers::get_size_usd(&chunks[50]);
+                                    let collateral_amount = helpers::get_collat(&chunks[58]);
 
-                                position_increases.push(PositionIncrease {
-                                    event_name: get_event_name(&chunks[4]),
-                                    trx: Hex::encode(&trx.hash),
-                                    account: helpers::helpers::get_address(&chunks[19]),
-                                    market: helpers::helpers::get_address(&chunks[23]),
-                                    execution_price: helpers::helpers::get_execution_price(
-                                        &chunks[80],
-                                    ),
-                                    size_usd,
-                                    size_tokens: helpers::helpers::get_size_in_tokens(&chunks[54]),
-                                    collateral_amount,
-                                    is_long: helpers::helpers::is_long(&chunks[136]),
-                                    leverage: ((size_usd / collateral_amount) * 10.0).round()
-                                        / 10.0,
-                                    order_type: helpers::helpers::get_order_type(&chunks[108]),
-                                    order_key: chunks[146].clone(),
-                                    position_key: chunks[150].clone(),
-                                    timestamp: blk.timestamp().to_string(),
-                                    block_number: blk.number,
-                                });
+                                    Some(PositionIncrease {
+                                        event_name: helpers::get_event_name(&chunks[4]),
+                                        trx: Hex::encode(&trx.hash),
+                                        account: helpers::get_address(&chunks[19]),
+                                        market: market.market_address.clone(),
+                                        execution_price: market.get_execution_price(&chunks[80]),
+                                        size_usd,
+                                        size_tokens: market.get_tokens(&chunks[54]),
+                                        collateral_amount,
+                                        is_long: helpers::is_long(&chunks[136]),
+                                        leverage: ((size_usd / collateral_amount) * 10.0).round()
+                                            / 10.0,
+                                        order_type: helpers::get_order_type(&chunks[108]),
+                                        order_key: chunks[146].clone(),
+                                        position_key: chunks[150].clone(),
+                                        timestamp: blk.timestamp().to_string(),
+                                        block_number: blk.number,
+                                    })
+                                } else {
+                                    None
+                                }
+                            } else {
+                                None
                             }
-                        }
-                    }
-                }
-            }
-        }
+                        })
+                    })
+                })
+            })
+            .flatten()
+            .flatten()
+            .flatten()
+            .collect();
 
         Ok(Some(PositionIncreases { position_increases }))
     }
