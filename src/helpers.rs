@@ -9,6 +9,9 @@ pub mod helpers {
         WSOL,
         LINK,
         XRP,
+        UNI,
+        DOGE,
+        LTC,
     }
 
     pub struct Market {
@@ -29,6 +32,9 @@ pub mod helpers {
                 MarketToken::WSOL => execution_price / 1e9,
                 MarketToken::LINK => execution_price / 1e18,
                 MarketToken::XRP => execution_price / 1e24,
+                MarketToken::UNI => execution_price / 1e18,
+                MarketToken::DOGE => execution_price / 1e22,
+                MarketToken::LTC => execution_price / 1e22,
             };
 
             let execution_price = execution_price.to_string().parse::<f64>().unwrap();
@@ -47,6 +53,9 @@ pub mod helpers {
                 MarketToken::WSOL => tokens / 1e9,
                 MarketToken::LINK => tokens / 1e18,
                 MarketToken::XRP => tokens / 1e6,
+                MarketToken::UNI => tokens / 1e18,
+                MarketToken::DOGE => tokens / 1e8,
+                MarketToken::LTC => tokens / 1e8,
             };
 
             let tokens = tokens.to_string().parse::<f64>().unwrap();
@@ -81,6 +90,22 @@ pub mod helpers {
                 market: MarketToken::XRP,
                 market_address: "XRP".to_string(),
             },
+            "c7abb2c5f3bf3ceb389df0eecd6120d451170b50" => Market {
+                market: MarketToken::UNI,
+                market_address: "UNI".to_string(),
+            },
+            "6853ea96ff216fab11d2d930ce3c508556a4bdc4" => Market {
+                market: MarketToken::DOGE,
+                market_address: "DOGE".to_string(),
+            },
+            "d9535bb5f58a1a75032416f2dfe7880c30575a41" => Market {
+                market: MarketToken::LTC,
+                market_address: "LTC".to_string(),
+            },
+            /*            _ => Market {
+                market: MarketToken::WBTC,
+                market_address: "WBTC".to_string(),
+            }, */
             _ => panic!("Unknown market: {}", market),
         }
     }
