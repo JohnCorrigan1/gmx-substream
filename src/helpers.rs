@@ -16,6 +16,7 @@ pub mod helpers {
 
     pub struct Market {
         pub market: MarketToken,
+        pub market_name: String,
         pub market_address: String,
     }
 
@@ -68,44 +69,49 @@ pub mod helpers {
         match market.as_str() {
             "47c031236e19d024b42f8ae6780e44a573170703" => Market {
                 market: MarketToken::WBTC,
-                market_address: "WBTC".to_string(),
+                market_address: market,
+                market_name: "WBTC".to_string(),
             },
             "c25cef6061cf5de5eb761b50e4743c1f5d7e5407" => Market {
                 market: MarketToken::ARB,
-                market_address: "ARB".to_string(),
+                market_address: market,
+                market_name: "ARB".to_string(),
             },
             "70d95587d40a2caf56bd97485ab3eec10bee6336" => Market {
                 market: MarketToken::WETH,
-                market_address: "WETH".to_string(),
+                market_address: market,
+                market_name: "WETH".to_string(),
             },
             "09400d9db990d5ed3f35d7be61dfaeb900af03c9" => Market {
                 market: MarketToken::WSOL,
-                market_address: "WSOL".to_string(),
+                market_address: market,
+                market_name: "WSOL".to_string(),
             },
             "7f1fa204bb700853d36994da19f830b6ad18455c" => Market {
                 market: MarketToken::LINK,
-                market_address: "LINK".to_string(),
+                market_address: market,
+                market_name: "LINK".to_string(),
             },
             "0ccb4faa6f1f1b30911619f1184082ab4e25813c" => Market {
                 market: MarketToken::XRP,
-                market_address: "XRP".to_string(),
+                market_address: market,
+                market_name: "XRP".to_string(),
             },
             "c7abb2c5f3bf3ceb389df0eecd6120d451170b50" => Market {
                 market: MarketToken::UNI,
-                market_address: "UNI".to_string(),
+                market_address: market,
+                market_name: "UNI".to_string(),
             },
             "6853ea96ff216fab11d2d930ce3c508556a4bdc4" => Market {
                 market: MarketToken::DOGE,
-                market_address: "DOGE".to_string(),
+                market_address: market,
+                market_name: "DOGE".to_string(),
             },
             "d9535bb5f58a1a75032416f2dfe7880c30575a41" => Market {
                 market: MarketToken::LTC,
-                market_address: "LTC".to_string(),
+                market_address: market,
+                market_name: "LTC".to_string(),
             },
-            /*            _ => Market {
-                market: MarketToken::WBTC,
-                market_address: "WBTC".to_string(),
-            }, */
             _ => panic!("Unknown market: {}", market),
         }
     }
@@ -116,7 +122,6 @@ pub mod helpers {
         for i in (0..Hex::encode(&data).len()).step_by(64) {
             chunks.push(Hex::encode(&data).chars().skip(i).take(64).collect());
         }
-
         chunks
     }
 

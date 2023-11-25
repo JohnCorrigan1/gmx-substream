@@ -31,7 +31,8 @@ pub mod decrease_maps {
                                 let chunks: Vec<String> = helpers::get_chunks(g.data.clone());
 
                                 if helpers::get_event_name(&chunks[4]) == "PositionDecrease".to_string() {
-                                    let market = helpers::get_address(&chunks[23]);
+                                    //let market = helpers::get_address(&chunks[23]);
+                                    let market = helpers::get_market(&chunks[23]);
                                     /*
                                     let execution_price = Hex::decode(&chunks[82]).unwrap();
                                     let execution_price =
@@ -47,7 +48,8 @@ pub mod decrease_maps {
                                         event_name: helpers::get_event_name(&chunks[4]),
                                         trx: Hex::encode(&trx.hash),
                                         account: helpers::get_address(&chunks[19]),
-                                        market, 
+                                        market: market.market_name.clone(),
+                                        market_address: market.market_address.clone(),
                                         execution_price: helpers::get_execution_price_old(&chunks[82]),
                                         size_usd: 0.01,
                                         size_tokens: helpers::get_size_in_tokens(
@@ -93,7 +95,7 @@ pub mod decrease_maps {
             .collect();
 
         Ok(Some(PositionDecreases {
-           position_decreases: liquidations,
+            position_decreases: liquidations,
         }))
     }
 

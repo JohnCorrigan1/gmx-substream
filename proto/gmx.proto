@@ -11,17 +11,18 @@ message PositionIncrease {
     string trx = 2;
     string account = 3;
     string market = 4;
-    double executionPrice = 5;
-    double sizeUsd = 6;
-    double sizeTokens = 7;
-    double collateralAmount = 8;
-    bool isLong = 9;
-    double leverage = 10;
-    int32 orderType = 11;
-    string orderKey = 12;
-    string positionKey = 13;
-    string timestamp = 14;
-    uint64 blockNumber = 15;
+    string marketAddress = 5;
+    double executionPrice = 6;
+    double sizeUsd = 7;
+    double sizeTokens = 8;
+    double collateralAmount = 9;
+    bool isLong = 10;
+    double leverage = 11;
+    int32 orderType = 12;
+    string orderKey = 13;
+    string positionKey = 14;
+    string timestamp = 15;
+    uint64 blockNumber = 16;
 }
 
 message PositionDecreases {
@@ -33,16 +34,17 @@ message PositionDecrease {
     string trx = 2;
     string account = 3;
     string market = 4;
-    double executionPrice = 5;
-    double sizeUsd = 6;
-    double sizeTokens = 7;
-    double collateralAmount = 8;
-    bool isLong = 9;
-    double base_pnl = 10;
-    double leverage = 11;
-    int32 orderType = 12;
-    string orderKey = 13;
-    string positionKey = 14;
-    string timestamp = 15;
-    uint64 blockNumber = 16;
+    string marketAddress = 5;
+    double executionPrice = 6;
+    double sizeUsd = 7;
+    double sizeTokens = 8;
+    double collateralAmount = 9;
+    bool isLong = 10;
+    double base_pnl = 11;
+    double leverage = 12;
+    int32 orderType = 13;
+    string orderKey = 14;
+    string positionKey = 15;
+    string timestamp = 16;
+    uint64 blockNumber = 17;
 }
