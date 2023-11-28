@@ -1,8 +1,9 @@
 use substreams::Hex;
 
+const ZERO: &str = "0000000000000000000000000000000000000000000000000000000000000000";
+
 pub fn get_chunks(data: Vec<u8>) -> Vec<String> {
     let mut chunks: Vec<String> = Vec::new();
-
     for i in (0..Hex::encode(&data).len()).step_by(64) {
         chunks.push(Hex::encode(&data).chars().skip(i).take(64).collect());
     }
@@ -16,27 +17,25 @@ pub fn get_event_name(chunk: &str) -> String {
 }
 
 pub fn get_size_usd(chunk: &str) -> f64 {
+    if chunk == ZERO {
+        return f64::from(0.0);
+    }
     let usd = Hex::decode(chunk).unwrap();
     let usd: substreams::scalar::BigDecimal =
-        substreams::scalar::BigInt::from_signed_bytes_be(&usd) / 1e30;
+        substreams::scalar::BigInt::from_unsigned_bytes_be(&usd) / 1e30;
     let usd = usd.to_string().parse::<f64>().unwrap();
     (usd * 100.0).round() / 100.0
 }
 
 pub fn get_collat(chunk: &str) -> f64 {
+    if chunk == ZERO {
+        return f64::from(0.0);
+    }
     let collat = Hex::decode(chunk).unwrap();
     let collat: substreams::scalar::BigDecimal =
         substreams::scalar::BigInt::from_unsigned_bytes_be(&collat) / 1e6;
     let collat = collat.to_string().parse::<f64>().unwrap();
     (collat * 100.0).round() / 100.0
-}
-
-pub fn get_execution_price_old(chunk: &str) -> f64 {
-    let execution_price = Hex::decode(chunk).unwrap();
-    let execution_price: substreams::scalar::BigDecimal =
-        substreams::scalar::BigInt::from_unsigned_bytes_be(&execution_price) / 1e22;
-    let execution_price = execution_price.to_string().parse::<f64>().unwrap();
-    (execution_price * 100.0).round() / 100.0
 }
 
 pub fn is_long(chunk: &str) -> bool {
@@ -72,5 +71,13 @@ pub fn get_order_type(chunk: &str) -> i32 {
         substreams::scalar::BigInt::from_unsigned_bytes_be(&order_type);
     let order_type = order_type.to_string().parse::<i32>().unwrap();
     order_type
+}
+
+pub fn get_leverage(size_usd: f64, collateral_amount: f64) -> f64 {
+    if collateral_amount == 0.0 || size_usd == 0.0 {
+        return 0.0;
+    }
+    let leverage = size_usd / collateral_amount;
+    (leverage * 100.0).round() / 100.0
 }
 //}

@@ -26,6 +26,8 @@ fn map_decreases(blk: eth::Block) -> Result<Option<PositionDecreases>, substream
                             {
                                 let market: Market = get_market(&chunks[23]);
                                 let base_pnl = helpers::get_size_usd(&chunks[133]);
+                                let size_usd = helpers::get_size_usd(&chunks[52]);
+                                let collateral_amount = helpers::get_collat(&chunks[60]);
 
                                 Some(PositionDecrease {
                                     event_name: helpers::get_event_name(&chunks[4]),
@@ -33,13 +35,13 @@ fn map_decreases(blk: eth::Block) -> Result<Option<PositionDecreases>, substream
                                     account: helpers::get_address(&chunks[19]),
                                     market: market.market_name.clone(),
                                     market_address: market.market_address.clone(),
-                                    execution_price: helpers::get_execution_price_old(&chunks[82]),
-                                    size_usd: 0.01,
-                                    size_tokens: helpers::get_size_in_tokens(&chunks[54]),
-                                    collateral_amount: 0.01,
+                                    execution_price: market.get_execution_price(&chunks[82]),
+                                    size_usd,
+                                    size_tokens: helpers::get_size_in_tokens(&chunks[56]),
+                                    collateral_amount,
                                     is_long: helpers::is_long(&chunks[146]),
                                     base_pnl,
-                                    leverage: 10.0,
+                                    leverage: helpers::get_leverage(size_usd, collateral_amount),
                                     order_type: helpers::get_order_type(&chunks[118]),
                                     order_key: chunks[156].clone(),
                                     position_key: chunks[160].clone(),

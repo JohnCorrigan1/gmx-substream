@@ -1,6 +1,6 @@
 specVersion: v0.1.0
 package:
-  name: "substreams_template"
+  name: "gmxsubstream"
   version: v0.1.0
 
 protobuf:
@@ -31,14 +31,6 @@ modules:
     output:
       type: proto:gmx.PositionDecreases
 
-  - name: map_decrease_events
-    kind: map
-    initialBlock: 12287507
-    inputs:
-      - source: sf.ethereum.type.v2.Block
-    output:
-      type: proto:gmx.PositionDecreases
-
   - name: map_liquidations
     kind: map
     initialBlock: 12287507
@@ -46,7 +38,6 @@ modules:
       - map: map_decreases 
     output:
       type: proto:gmx.PositionDecreases
-
 
   - name: map_wbtc_increases
     kind: map
@@ -121,6 +112,71 @@ modules:
       type: proto:gmx.PositionIncreases
 
   - name: map_wsol_decreases
+    kind: map
+    initialBlock: 12287507
+    inputs:
+      - map: map_decreases
+    output:
+      type: proto:gmx.PositionDecreases
+
+
+  - name: map_uni_increases
+    kind: map
+    initialBlock: 12287507
+    inputs:
+      - map: map_increases
+    output:
+      type: proto:gmx.PositionIncreases
+
+  - name: map_uni_decreases
+    kind: map
+    initialBlock: 12287507
+    inputs:
+      - map: map_decreases
+    output:
+      type: proto:gmx.PositionDecreases
+
+  - name: map_xrp_increases
+    kind: map
+    initialBlock: 12287507
+    inputs:
+      - map: map_increases
+    output:
+      type: proto:gmx.PositionIncreases
+
+  - name: map_xrp_decreases
+    kind: map
+    initialBlock: 12287507
+    inputs:
+      - map: map_decreases
+    output:
+      type: proto:gmx.PositionDecreases
+
+  - name: map_doge_increases
+    kind: map
+    initialBlock: 12287507
+    inputs:
+      - map: map_increases
+    output:
+      type: proto:gmx.PositionIncreases
+
+  - name: map_doge_decreases
+    kind: map
+    initialBlock: 12287507
+    inputs:
+      - map: map_decreases
+    output:
+      type: proto:gmx.PositionDecreases
+
+  - name: map_ltc_increases
+    kind: map
+    initialBlock: 12287507
+    inputs:
+      - map: map_increases
+    output:
+      type: proto:gmx.PositionIncreases
+
+  - name: map_ltc_decreases
     kind: map
     initialBlock: 12287507
     inputs:
