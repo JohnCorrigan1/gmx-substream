@@ -37,7 +37,7 @@ fn map_decreases(blk: eth::Block) -> Result<Option<PositionDecreases>, substream
                                     market_address: market.market_address.clone(),
                                     execution_price: market.get_execution_price(&chunks[82]),
                                     size_usd,
-                                    size_tokens: helpers::get_size_in_tokens(&chunks[56]),
+                                    size_tokens: market.get_tokens(&chunks[56]),
                                     collateral_amount,
                                     is_long: helpers::is_long(&chunks[146]),
                                     base_pnl,
@@ -223,5 +223,37 @@ fn map_ltc_decreases(
 
     Ok(Some(PositionDecreases {
         position_decreases: ltc,
+    }))
+}
+
+#[substreams::handlers::map]
+fn map_long_decreases(
+    decreases: PositionDecreases,
+) -> Result<Option<PositionDecreases>, substreams::errors::Error> {
+    let long: Vec<_> = decreases
+        .position_decreases
+        .iter()
+        .filter(|e| e.is_long == true)
+        .map(|e| e.clone())
+        .collect();
+
+    Ok(Some(PositionDecreases {
+        position_decreases: long,
+    }))
+}
+
+#[substreams::handlers::map]
+fn map_short_decreases(
+    decreases: PositionDecreases,
+) -> Result<Option<PositionDecreases>, substreams::errors::Error> {
+    let short: Vec<_> = decreases
+        .position_decreases
+        .iter()
+        .filter(|e| e.is_long == false)
+        .map(|e| e.clone())
+        .collect();
+
+    Ok(Some(PositionDecreases {
+        position_decreases: short,
     }))
 }

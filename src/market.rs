@@ -52,7 +52,7 @@ impl Market {
 
         let tokens: substreams::scalar::BigDecimal = match self.market {
             MarketToken::WBTC => tokens / 1e8,
-            MarketToken::ARB => tokens / 1e8,
+            MarketToken::ARB => tokens / 1e18,
             MarketToken::WETH => tokens / 1e18,
             MarketToken::WSOL => tokens / 1e9,
             MarketToken::LINK => tokens / 1e18,

@@ -23,11 +23,44 @@ modules:
     output:
       type: proto:gmx.PositionIncreases
 
+  - name: map_long_increases
+    kind: map
+    initialBlock: 12287507
+    inputs:
+      - map: map_increases
+    output:
+      type: proto:gmx.PositionDecreases
+
+  - name: map_short_increases
+    kind: map
+    initialBlock: 12287507
+    inputs:
+      - map: map_increases
+    output:
+      type: proto:gmx.PositionDecreases
+
+
   - name: map_decreases
     kind: map
     initialBlock: 12287507
     inputs:
       - source: sf.ethereum.type.v2.Block
+    output:
+      type: proto:gmx.PositionDecreases
+
+  - name: map_long_decreases
+    kind: map
+    initialBlock: 12287507
+    inputs:
+      - map: map_decreases
+    output:
+      type: proto:gmx.PositionDecreases
+
+  - name: map_short_decreases
+    kind: map
+    initialBlock: 12287507
+    inputs:
+      - map: map_decreases
     output:
       type: proto:gmx.PositionDecreases
 

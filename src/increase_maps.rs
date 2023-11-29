@@ -67,7 +67,9 @@ fn map_increases(blk: eth::Block) -> Result<Option<PositionIncreases>, substream
 }
 
 #[substreams::handlers::map]
-fn map_wbtc_increases(position_increases: PositionIncreases) -> PositionIncreases {
+fn map_wbtc_increases(
+    position_increases: PositionIncreases,
+) -> Result<Option<PositionIncreases>, substreams::errors::Error> {
     let wbtc_increases: Vec<_> = position_increases
         .position_increases
         .iter()
@@ -80,13 +82,15 @@ fn map_wbtc_increases(position_increases: PositionIncreases) -> PositionIncrease
         })
         .collect();
 
-    PositionIncreases {
+    Ok(Some(PositionIncreases {
         position_increases: wbtc_increases,
-    }
+    }))
 }
 
 #[substreams::handlers::map]
-fn map_weth_increases(position_increases: PositionIncreases) -> PositionIncreases {
+fn map_weth_increases(
+    position_increases: PositionIncreases,
+) -> Result<Option<PositionIncreases>, substreams::errors::Error> {
     let weth_increases: Vec<_> = position_increases
         .position_increases
         .iter()
@@ -99,13 +103,15 @@ fn map_weth_increases(position_increases: PositionIncreases) -> PositionIncrease
         })
         .collect();
 
-    PositionIncreases {
+    Ok(Some(PositionIncreases {
         position_increases: weth_increases,
-    }
+    }))
 }
 
 #[substreams::handlers::map]
-fn map_arb_increases(position_increases: PositionIncreases) -> PositionIncreases {
+fn map_arb_increases(
+    position_increases: PositionIncreases,
+) -> Result<Option<PositionIncreases>, substreams::errors::Error> {
     let arb_increases: Vec<_> = position_increases
         .position_increases
         .iter()
@@ -118,13 +124,15 @@ fn map_arb_increases(position_increases: PositionIncreases) -> PositionIncreases
         })
         .collect();
 
-    PositionIncreases {
+    Ok(Some(PositionIncreases {
         position_increases: arb_increases,
-    }
+    }))
 }
 
 #[substreams::handlers::map]
-fn map_wsol_increases(position_increases: PositionIncreases) -> PositionIncreases {
+fn map_wsol_increases(
+    position_increases: PositionIncreases,
+) -> Result<Option<PositionIncreases>, substreams::errors::Error> {
     let wsol_increases: Vec<_> = position_increases
         .position_increases
         .iter()
@@ -137,13 +145,15 @@ fn map_wsol_increases(position_increases: PositionIncreases) -> PositionIncrease
         })
         .collect();
 
-    PositionIncreases {
+    Ok(Some(PositionIncreases {
         position_increases: wsol_increases,
-    }
+    }))
 }
 
 #[substreams::handlers::map]
-fn map_link_increases(position_increases: PositionIncreases) -> PositionIncreases {
+fn map_link_increases(
+    position_increases: PositionIncreases,
+) -> Result<Option<PositionIncreases>, substreams::errors::Error> {
     let link_increases: Vec<_> = position_increases
         .position_increases
         .iter()
@@ -156,13 +166,15 @@ fn map_link_increases(position_increases: PositionIncreases) -> PositionIncrease
         })
         .collect();
 
-    PositionIncreases {
+    Ok(Some(PositionIncreases {
         position_increases: link_increases,
-    }
+    }))
 }
 
 #[substreams::handlers::map]
-fn map_uni_increases(position_increases: PositionIncreases) -> PositionIncreases {
+fn map_uni_increases(
+    position_increases: PositionIncreases,
+) -> Result<Option<PositionIncreases>, substreams::errors::Error> {
     let uni_increases: Vec<_> = position_increases
         .position_increases
         .iter()
@@ -175,13 +187,15 @@ fn map_uni_increases(position_increases: PositionIncreases) -> PositionIncreases
         })
         .collect();
 
-    PositionIncreases {
+    Ok(Some(PositionIncreases {
         position_increases: uni_increases,
-    }
+    }))
 }
 
 #[substreams::handlers::map]
-fn map_xrp_increases(position_increases: PositionIncreases) -> PositionIncreases {
+fn map_xrp_increases(
+    position_increases: PositionIncreases,
+) -> Result<Option<PositionIncreases>, substreams::errors::Error> {
     let xrp_increases: Vec<_> = position_increases
         .position_increases
         .iter()
@@ -194,13 +208,15 @@ fn map_xrp_increases(position_increases: PositionIncreases) -> PositionIncreases
         })
         .collect();
 
-    PositionIncreases {
+    Ok(Some(PositionIncreases {
         position_increases: xrp_increases,
-    }
+    }))
 }
 
 #[substreams::handlers::map]
-fn map_doge_increases(position_increases: PositionIncreases) -> PositionIncreases {
+fn map_doge_increases(
+    position_increases: PositionIncreases,
+) -> Result<Option<PositionIncreases>, substreams::errors::Error> {
     let doge_increases: Vec<_> = position_increases
         .position_increases
         .iter()
@@ -213,13 +229,15 @@ fn map_doge_increases(position_increases: PositionIncreases) -> PositionIncrease
         })
         .collect();
 
-    PositionIncreases {
+    Ok(Some(PositionIncreases {
         position_increases: doge_increases,
-    }
+    }))
 }
 
 #[substreams::handlers::map]
-fn map_ltc_increases(position_increases: PositionIncreases) -> PositionIncreases {
+fn map_ltc_increases(
+    position_increases: PositionIncreases,
+) -> Result<Option<PositionIncreases>, substreams::errors::Error> {
     let ltc_increases: Vec<_> = position_increases
         .position_increases
         .iter()
@@ -232,7 +250,49 @@ fn map_ltc_increases(position_increases: PositionIncreases) -> PositionIncreases
         })
         .collect();
 
-    PositionIncreases {
+    Ok(Some(PositionIncreases {
         position_increases: ltc_increases,
-    }
+    }))
+}
+
+#[substreams::handlers::map]
+fn map_long_increases(
+    position_increases: PositionIncreases,
+) -> Result<Option<PositionIncreases>, substreams::errors::Error> {
+    let long_increases: Vec<_> = position_increases
+        .position_increases
+        .iter()
+        .filter_map(|p| {
+            if p.is_long == true {
+                Some(p.clone())
+            } else {
+                None
+            }
+        })
+        .collect();
+
+    Ok(Some(PositionIncreases {
+        position_increases: long_increases,
+    }))
+}
+
+#[substreams::handlers::map]
+fn map_short_increases(
+    position_increases: PositionIncreases,
+) -> Result<Option<PositionIncreases>, substreams::errors::Error> {
+    let short_increases: Vec<_> = position_increases
+        .position_increases
+        .iter()
+        .filter_map(|p| {
+            if p.is_long == false {
+                Some(p.clone())
+            } else {
+                None
+            }
+        })
+        .collect();
+
+    Ok(Some(PositionIncreases {
+        position_increases: short_increases,
+    }))
 }

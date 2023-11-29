@@ -51,14 +51,6 @@ pub fn is_long(chunk: &str) -> bool {
     is_long
 }
 
-pub fn get_size_in_tokens(chunk: &str) -> f64 {
-    let size_in_tokens = Hex::decode(chunk).unwrap();
-    let size_in_tokens: substreams::scalar::BigInt =
-        substreams::scalar::BigInt::from_unsigned_bytes_be(&size_in_tokens);
-    let size_in_tokens = size_in_tokens.to_string().parse::<f64>().unwrap();
-    size_in_tokens
-}
-
 pub fn get_address(chunk: &str) -> String {
     let address = Hex::decode(chunk).unwrap();
     let address = Hex::encode(&address[12..].to_vec());
@@ -80,4 +72,3 @@ pub fn get_leverage(size_usd: f64, collateral_amount: f64) -> f64 {
     let leverage = size_usd / collateral_amount;
     (leverage * 100.0).round() / 100.0
 }
-//}
