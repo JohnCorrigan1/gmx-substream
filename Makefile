@@ -18,11 +18,11 @@ build:
 
 .PHONY: run
 run: build
-	substreams run -e $(ENDPOINT) substreams.yaml map_short_decreases -s $(START_BLOCK) -t $(STOP_BLOCK)
+	substreams run -e $(ENDPOINT) substreams.yaml map_decreases -s $(START_BLOCK) -t $(STOP_BLOCK)
 
-.PHONY: run2 
-run2: build
-	substreams run -e $(ENDPOINT) substreams.yaml map_increases -s $(START_BLOCK) -t $(STOP_BLOCK)
+.PHONY: runGraph
+runGraph: build
+	substreams run -e $(ENDPOINT) substreams.yaml graph_out
 
 .PHONY: gui
 gui: build
@@ -30,8 +30,7 @@ gui: build
 
 .PHONY: protogen
 protogen:
-	substreams protogen ./substreams.yaml --exclude-paths="google,sf/substreams/rpc,sf/substreams/v1"
-
+	substreams protogen ./substreams.yaml --exclude-paths="google,sf/substreams/sink/database,sf/substreams/rpc,sf/substreams/v1"
 .PHONY: pack
 pack: build
 	substreams pack substreams.yaml

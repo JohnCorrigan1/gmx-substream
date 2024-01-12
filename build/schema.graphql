@@ -1,0 +1,39 @@
+type PositionIncrease @entity(immutable: true) {
+    id: ID!
+    event: String!
+    txHash: String!
+    account: String!
+    market: String!
+    marketAddress: String!
+    executionPrice: BigDecimal!
+    sizeUsd: BigDecimal!
+    sizeTokens: BigDecimal!
+    collateralAmount: BigDecimal!
+    isLong: Boolean!
+    leverage: BigDecimal!
+    orderType: Int!
+    orderKey: String!
+    timestamp: String!
+    blockNumber: BigInt!
+}
+
+type PositionDecrease @entity(immutable: true) {
+    id: ID!
+    event: String!
+    txHash: String!
+    account: String!
+    market: String!
+    marketAddress: String!
+    executionPrice: String!
+    sizeUsd: String!
+    sizeTokens: String!
+    collateralAmount: String!
+    isLong: Boolean!
+    basePnl: String!
+    leverage: String!
+    orderType: Int!
+    orderKey: String!
+    positionKey: String!
+    timestamp: String!
+    blockNumber: BigInt!
+}

@@ -3,6 +3,11 @@ package:
   name: "gmxsubstream"
   version: v0.1.0
 
+imports:
+  entities: https://github.com/streamingfast/substreams-sink-entity-changes/releases/download/v1.3.0/substreams-sink-entity-changes-v1.3.0.spkg
+  database_change: https://github.com/streamingfast/substreams-sink-database-changes/releases/download/v1.2.1/substreams-database-change-v1.2.1.spkg
+  sql: https://github.com/streamingfast/substreams-sink-sql/releases/download/protodefs-v1.0.2/substreams-sink-sql-protodefs-v1.0.2.spkg
+
 protobuf:
   files:
     - gmx.proto
@@ -17,7 +22,7 @@ binaries:
 modules:
   - name: map_increases
     kind: map
-    initialBlock: 12287507
+    initialBlock: 107737756
     inputs:
       - source: sf.ethereum.type.v2.Block
     output:
@@ -25,7 +30,7 @@ modules:
 
   - name: map_long_increases
     kind: map
-    initialBlock: 12287507
+    initialBlock: 107737756
     inputs:
       - map: map_increases
     output:
@@ -42,7 +47,7 @@ modules:
 
   - name: map_decreases
     kind: map
-    initialBlock: 12287507
+    initialBlock: 107737756 
     inputs:
       - source: sf.ethereum.type.v2.Block
     output:
@@ -216,5 +221,14 @@ modules:
       - map: map_decreases
     output:
       type: proto:gmx.PositionDecreases
+
+  - name: graph_out
+    kind: map
+    initialBlock: 107737756 
+    inputs:
+      - map: map_increases
+      - map: map_decreases
+    output:
+      type: proto:sf.substreams.sink.entity.v1.EntityChanges
 
 network: arbitrum-one 

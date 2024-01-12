@@ -1,0 +1,16 @@
+specVersion: 0.0.4
+description: GMX v2 subgraph for position increases and decreases (powered by substreams)
+repository: https://github.com/JohnCorrigan1/gmx-substream.git
+schema:
+  file: schema.graphql
+dataSources:
+  - kind: substreams
+    name: gmx-substream
+    network: arbitrum-one
+    source:
+      package:
+        moduleName: graph_out
+        file: gmx-substream/gmxsubstream-v0.1.0.spkg
+    mapping:
+      kind: substreams/graph-entities
+      apiVersion: 0.0.5
