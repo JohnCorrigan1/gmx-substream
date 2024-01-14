@@ -24,13 +24,13 @@ type PositionDecrease @entity(immutable: true) {
     account: String!
     market: String!
     marketAddress: String!
-    executionPrice: String!
-    sizeUsd: String!
-    sizeTokens: String!
-    collateralAmount: String!
+    executionPrice: BigDecimal!
+    sizeUsd: BigDecimal!
+    sizeTokens: BigDecimal!
+    collateralAmount: BigDecimal!
     isLong: Boolean!
-    basePnl: String!
-    leverage: String!
+    basePnl: BigDecimal!
+    leverage: BigDecimal!
     orderType: Int!
     orderKey: String!
     positionKey: String!

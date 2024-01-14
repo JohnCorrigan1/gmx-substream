@@ -20,6 +20,16 @@ pub fn get_size_usd(chunk: &str) -> f64 {
     if chunk == ZERO {
         return f64::from(0.0);
     }
+    substreams::log::info!("chunk: {}", chunk);
+    //check if negative
+    if chunk.chars().nth(0).unwrap() == 'f' {
+        let chunk = chunk.replace("f", "0");
+        let usd = Hex::decode(chunk).unwrap();
+        let usd: substreams::scalar::BigDecimal =
+            substreams::scalar::BigInt::from_unsigned_bytes_be(&usd) / 1e30;
+        let usd = usd.to_string().parse::<f64>().unwrap();
+        return (usd * -100.0).round() / 100.0;
+    }
     let usd = Hex::decode(chunk).unwrap();
     let usd: substreams::scalar::BigDecimal =
         substreams::scalar::BigInt::from_unsigned_bytes_be(&usd) / 1e30;

@@ -28,7 +28,6 @@ fn map_decreases(blk: eth::Block) -> Result<Option<PositionDecreases>, substream
                                 let base_pnl = helpers::get_size_usd(&chunks[133]);
                                 let size_usd = helpers::get_size_usd(&chunks[52]);
                                 let collateral_amount = helpers::get_collat(&chunks[60]);
-
                                 Some(PositionDecrease {
                                     event_name: helpers::get_event_name(&chunks[4]),
                                     trx: Hex::encode(&trx.hash),
