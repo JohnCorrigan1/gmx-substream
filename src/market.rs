@@ -1,5 +1,4 @@
-use crate::helpers::get_address;
-use substreams::Hex;
+use substreams::scalar::{BigDecimal, BigInt};
 
 pub enum MarketToken {
     WBTC,
@@ -20,12 +19,9 @@ pub struct Market {
 }
 
 impl Market {
-    pub fn get_execution_price(&self, chunk: &str) -> f64 {
-        let execution_price = Hex::decode(chunk).unwrap();
-        let execution_price: substreams::scalar::BigInt =
-            substreams::scalar::BigInt::from_unsigned_bytes_be(&execution_price);
-
-        let execution_price: substreams::scalar::BigDecimal = match self.market {
+    pub fn get_execution_price(&self, execution_price: &BigInt) -> f64 {
+        let execution_price = execution_price.clone();
+        let execution_price: BigDecimal = match self.market {
             MarketToken::WBTC => execution_price / 1e22,
             MarketToken::ARB => execution_price / 1e12,
             MarketToken::WETH => execution_price / 1e12,
@@ -41,15 +37,13 @@ impl Market {
         match self.market {
             MarketToken::DOGE => (execution_price * 10000.0).round() / 10000.0,
             MarketToken::XRP => (execution_price * 1000.0).round() / 1000.0,
+            MarketToken::ARB => (execution_price * 1000.0).round() / 1000.0,
             _ => (execution_price * 100.0).round() / 100.0,
         }
     }
 
-    pub fn get_tokens(&self, chunk: &str) -> f64 {
-        let tokens = Hex::decode(chunk).unwrap();
-        let tokens: substreams::scalar::BigInt =
-            substreams::scalar::BigInt::from_unsigned_bytes_be(&tokens);
-
+    pub fn get_tokens(&self, tokens: &BigInt) -> f64 {
+        let tokens = tokens.clone();
         let tokens: substreams::scalar::BigDecimal = match self.market {
             MarketToken::WBTC => tokens / 1e8,
             MarketToken::ARB => tokens / 1e18,
@@ -67,8 +61,7 @@ impl Market {
     }
 }
 
-pub fn get_market(chunk: &str) -> Market {
-    let market = get_address(chunk);
+pub fn get_market(market: String) -> Market {
     match market.as_str() {
         "47c031236e19d024b42f8ae6780e44a573170703" => Market {
             market: MarketToken::WBTC,

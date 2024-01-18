@@ -1,7 +1,7 @@
 specVersion: v0.1.0
 package:
   name: "gmxsubstream"
-  version: v0.1.0
+  version: v0.2.0
 
 imports:
   entities: https://github.com/streamingfast/substreams-sink-entity-changes/releases/download/v1.3.0/substreams-sink-entity-changes-v1.3.0.spkg
@@ -20,6 +20,14 @@ binaries:
     file: ./target/wasm32-unknown-unknown/release/substreams.wasm
 
 modules:
+  - name: map_positions
+    kind: map
+    initialBlock: 107737756
+    inputs:
+      - source: sf.ethereum.type.v2.Block
+    output:
+      type: proto:gmx.PositionDecreases
+
   - name: map_increases
     kind: map
     initialBlock: 107737756
@@ -226,8 +234,7 @@ modules:
     kind: map
     initialBlock: 107737756 
     inputs:
-      - map: map_increases
-      - map: map_decreases
+      - map: map_positions
     output:
       type: proto:sf.substreams.sink.entity.v1.EntityChanges
 

@@ -13,6 +13,7 @@ type PositionIncrease @entity(immutable: true) {
     leverage: BigDecimal!
     orderType: Int!
     orderKey: String!
+    positionKey: String!
     timestamp: String!
     blockNumber: BigInt!
 }

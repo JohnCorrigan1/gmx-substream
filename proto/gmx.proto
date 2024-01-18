@@ -48,3 +48,27 @@ message PositionDecrease {
     string timestamp = 16;
     uint64 blockNumber = 17;
 }
+
+message PositionChange {
+    string eventName = 1;
+    string trx = 2;
+    string account = 3;
+    string market = 4;
+    string marketAddress = 5;
+    double executionPrice = 6;
+    double sizeUsd = 7;
+    double sizeTokens = 8;
+    double collateralAmount = 9;
+    bool isLong = 10;
+    double base_pnl = 11;
+    double leverage = 12;
+    int32 orderType = 13;
+    string orderKey = 14;
+    string positionKey = 15;
+    string timestamp = 16;
+    uint64 blockNumber = 17;
+}
+
+message PositionChanges {
+   repeated PositionChange positionChanges = 1; 
+}

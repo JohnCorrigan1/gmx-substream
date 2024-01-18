@@ -10,7 +10,7 @@ START_BLOCK ?= 170466173
 #meSTART_BLOCK ?= 154415638
 #START_BLOCK ?= 154260315
 #START_BLOCK ?= 154268963
-STOP_BLOCK ?= +10000
+STOP_BLOCK ?= +500
 #STOP_BLOCK ?= +10000 
 
 .PHONY: build
@@ -19,7 +19,7 @@ build:
 
 .PHONY: run
 run: build
-	substreams run -e $(ENDPOINT) substreams.yaml map_decreases -s $(START_BLOCK) -t $(STOP_BLOCK)
+	substreams run -e $(ENDPOINT) substreams.yaml map_positions -s $(START_BLOCK) -t $(STOP_BLOCK)
 
 .PHONY: runGraph
 runGraph: build

@@ -689,12 +689,6 @@
             },
             {
                 "indexed": true,
-                "internalType": "string",
-                "name": "eventNameHash",
-                "type": "string"
-            },
-            {
-                "indexed": true,
                 "internalType": "bytes32",
                 "name": "topic1",
                 "type": "bytes32"
